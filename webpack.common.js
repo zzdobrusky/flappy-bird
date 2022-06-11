@@ -6,12 +6,15 @@ const webpack = require('webpack');
 module.exports = {
   mode: 'development',
   entry: {
-    app: './src/index.js'
+    app: './src/index.ts'
   },
   devtool: "eval-source-map",
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'build'),
+  },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js'],
   },
   optimization: {
     splitChunks: {
@@ -27,19 +30,18 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.tsx?$/,
+        use: 'ts-loader',
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-        }
-      }
-    ]
+      },
+    ],
   },
   devServer: {
     static: path.join(__dirname, 'build'),
     compress: true,
     port: 8080,
   },
+  mode: process.env.NODE_ENV == 'production' ? 'production' : 'development',
   plugins: [
     new webpack.DefinePlugin({
       'CANVAS_RENDERER': JSON.stringify(true),
